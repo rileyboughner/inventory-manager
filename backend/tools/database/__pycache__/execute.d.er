@@ -1,0 +1,5 @@
+##[pylyzer] failed /home/rileyboughner/Code/cms/backend/tools/database/execute.py 1747168673 602
+.___v_desugar_1 = pyimport "databaseSettings"
+.databaseSettings = pyimport "databaseSettings"
+.getDatabaseCursor: () -> Tuple([Never, Never])
+.execute: (query: Obj, data: Obj := Obj, fetch: Bool := Bool) -> Never

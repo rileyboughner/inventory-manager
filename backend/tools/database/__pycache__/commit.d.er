@@ -1,0 +1,5 @@
+##[pylyzer] failed /home/rileyboughner/Code/cms/backend/tools/database/commit.py 1747435595 618
+.___v_desugar_1 = pyimport "databaseSettings"
+.databaseSettings = pyimport "databaseSettings"
+.getDatabaseCursor: () -> Tuple([Never, Never])
+.commit: |Type_796 <: Structural({.upper = (self: Obj) -> Type_830}), Type_830 <: Structural({.__contains__ = (self: Never, R) -> Bool and (self: Never, R) -> Bool}), R :> {"RETURNING"}|(query: Type_796, data: Obj := {None}) -> Never

@@ -1,0 +1,5 @@
+##[pylyzer] failed /home/rileyboughner/Code/cms/backend/tools/database/databaseSettings.py 1747161339 217
+.psycopg2 = pyimport "<failure>"
+.<failure> = pyimport "<failure>"
+
+.getDatabaseCursor: () -> Tuple([Never, Never])

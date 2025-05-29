@@ -8,30 +8,30 @@ from tools.general.processItems import processItems
 import sys
 import os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 app = Flask(__name__)
+
 
 # --- inventory ---
 @app.route("/api/inventory/", defaults={"company_id": None})
-@app.route('/api/inventory/<company_id>')
+@app.route("/api/inventory/<company_id>")
 def get_inventory(company_id):
     return jsonify(getInventory(company_id))
 
+
 # --- trades ---
-@app.route('/api/trade/', methods=['POST'])
+@app.route("/api/trade/", methods=["POST"])
 def trade():
     try:
         data = request.get_json()
-        company_id = data.get('company_id')
-        value_in = data.get('value_in')
-        items_in = data.get('items_in')
-        value_out = data.get('value_out')
-        items_out = data.get('items_out')
+        company_id = data.get("company_id")
+        value_in = data.get("value_in")
+        items_in = data.get("items_in")
+        value_out = data.get("value_out")
+        items_out = data.get("items_out")
 
-        #items_in = processItems(items_in)
-        #items_out = processItems(items_out)
-
-        print(items_in)
+        # items_in = processItems(items_in)
+        # items_out = processItems(items_out)
 
         result = addTrade(company_id, value_in, items_in, value_out, items_out)
         return jsonify({"success": True, "result": result}), 200
@@ -40,6 +40,7 @@ def trade():
         print(exception)
         return jsonify({"success": False, "error": str(exception)}), 500
 
+
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run()

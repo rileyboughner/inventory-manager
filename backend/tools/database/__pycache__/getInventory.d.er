@@ -1,0 +1,5 @@
+##[pylyzer] failed /home/rileyboughner/Code/cms/backend/tools/database/getInventory.py 1747168256 248
+.___v_desugar_1 = pyimport "execute"
+.execute = pyimport "execute"
+.execute: (query: Obj, data: Obj := Obj, fetch: Bool := Bool) -> Never
+.getInventory: (company_id: Obj := Obj) -> Never

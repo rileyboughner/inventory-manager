@@ -2,7 +2,7 @@ import React from "react";
 import React, { useState } from 'react';
 import Sidebar from "../components/Sidebar";
 import ItemCard from "../components/ItemCard"; // using the shared ItemCard
-import ItemPopup from "../components/ItemPopup"
+import ItemInfoPopup from "../components/ItemInfoPopup"
 
 const placeholderHistory = [
   {
@@ -87,7 +87,7 @@ const History: React.FC = () => {
 
       </div>
       {selectedItem && (
-        <ItemPopup item={selectedItem} onClose={() => setSelectedItem(null)} />
+        <ItemInfoPopup item={selectedItem} onClose={() => setSelectedItem(null)} />
       )}
     </div>
   );

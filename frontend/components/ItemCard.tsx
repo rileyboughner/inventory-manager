@@ -87,7 +87,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
 
   return (
     <div style={cardStyle} onClick={onClick}>
-      <img src={imageUrl} alt={`${brand} ${model}`} style={imageStyle} />
+      <img src={imageUrl} alt={``} style={imageStyle} />
       <div style={boldNameStyle}>{brand} {model}</div>
       {showSoldDate ? (
         <div style={labelStyle}>Sold on: {dateSold}</div>

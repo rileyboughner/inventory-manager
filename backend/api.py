@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from tools.database.getInventory import getInventory
 from tools.database.addTrade import addTrade
+from tools.database.buyItem import buyItem
 from tools.database.addItem import addItem
 from tools.general.processItems import processItems
 
@@ -18,6 +19,28 @@ app = Flask(__name__)
 def get_inventory(company_id):
     return jsonify(getInventory(company_id))
 
+# -- Buy --
+@app.route("/api/buy", methods=["POST"])
+def Buy():
+    try:
+        data = request.get_json()
+        print(data)
+
+        company_id = 0 #data.get("company_id")
+        brand = data.get("brand")
+        model = data.get("model")
+        color = data.get("color")
+        style = data.get("syle")
+        serial_number = data.get("serial")
+        price = data.get("price")
+        image_url = data.get("image_url")
+
+        result = buyItem(company_id, brand, model, color, style, serial_number, price, image_url)
+        return jsonify({"success": True, "result": result}), 200
+
+    except Exception as exception:
+        print(exception)
+        return jsonify({"success": False, "error": str(exception)}), 500
 
 # --- trades ---
 @app.route("/api/trade/", methods=["POST"])

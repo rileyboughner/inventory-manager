@@ -1,0 +1,38 @@
+##[pylyzer] failed /home/rileyboughner/Code/cms/backend/api.py 1749228448 2177
+.___v_desugar_1 = pyimport "__init__"
+.__init__ = pyimport "__init__"
+.Flask: Never
+.jsonify: Never
+.request: Never
+.___v_desugar_2 = pyimport "__init__"
+
+.CORS: {extension.CORS}
+.___v_desugar_3 = pyimport "getInventory"
+.getInventory = pyimport "getInventory"
+.getInventory: (company_id: Obj := Obj) -> Never
+.___v_desugar_4 = pyimport "addTrade"
+.addTrade = pyimport "addTrade"
+.addTrade: (company_id: Obj, value_in: Obj, items_in: Obj, value_out: Obj, items_out: Obj) -> Never
+.___v_desugar_5 = pyimport "buyItem"
+.buyItem = pyimport "buyItem"
+.buyItem: Never
+.___v_desugar_6 = pyimport "addItem"
+.addItem = pyimport "addItem"
+.addItem: (color: Obj, serial_number: Obj, brand: Obj, model: Obj) -> Never
+.___v_desugar_7 = pyimport "processItems"
+.processItems = pyimport "processItems"
+.processItems: (items: global::Iterable(Never)) -> Str
+.sys = pyimport "sys"
+
+.os = pyimport "os"
+
+
+.app: Never
+.get_inventory: (company_id: Obj) -> Never
+.Buy: () -> Never
+.trade: () -> Never
+
+
+
+
+

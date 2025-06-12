@@ -1,0 +1,6 @@
+##[pylyzer] failed /home/rileyboughner/Code/cms/backend/tools/database/buyItem.py 1749228389 410
+.___v_desugar_1 = pyimport "commit"
+.commit = pyimport "commit"
+.commit: (query: Structural({.upper = (self: Obj) -> Type_830}), data: Obj := {None}) -> Never
+.addItem: (color: Obj, serial_number: Obj, brand: Obj, model: Obj) -> Never
+

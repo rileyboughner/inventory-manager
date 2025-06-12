@@ -18,7 +18,7 @@ const Sidebar: React.FC = () => {
         <nav style={navContainerStyle}>
           <ul style={navListStyle}>
             <li style={navItemStyle}>
-              <a href="/trades" style={linkStyle}>
+              <a href="/dashboard" style={linkStyle}>
                 <GiSplitArrows style={iconStyle} />
                 Buy & Sell
               </a>

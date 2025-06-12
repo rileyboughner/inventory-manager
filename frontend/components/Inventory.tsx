@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ItemCard from "../components/ItemCard";
-import ItemPopup from "../components/ItemPopup";
+import ItemInfoPopup from "../components/ItemInfoPopup";
 import SellPopup from "../components/SellPopup";
 
 type InventoryItem = {
@@ -20,7 +20,7 @@ const Inventory: React.FC = () => {
   const [showSellPopup, setShowSellPopup] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/inventory/0")
+    fetch("http://localhost:5000/api/inventory/") //use the company id eventually
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP error ${res.status}`);
         return res.json();
@@ -59,7 +59,7 @@ const Inventory: React.FC = () => {
       </div>
 
       {selectedItem && !showSellPopup && (
-        <ItemPopup item={selectedItem} onClose={() => setSelectedItem(null)} />
+        <ItemInfoPopup item={selectedItem} onClose={() => setSelectedItem(null)} />
       )}
 
       {selectedItem && showSellPopup && (

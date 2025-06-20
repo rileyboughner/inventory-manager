@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 
-const BuyPopup: React.FC<{ onClose: () => void; onConfirm: () => void }> = ({ onClose, onConfirm }) => {
+const BuyPopup: React.FC<{
+  onClose: () => void;
+  onConfirm: () => void;
+}> = ({ onClose, onConfirm }) => {
   const [formData, setFormData] = useState({
     brand: "",
     model: "",
@@ -11,12 +14,24 @@ const BuyPopup: React.FC<{ onClose: () => void; onConfirm: () => void }> = ({ on
     price: "",
   });
 
+  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async () => {
+    const newErrors: { [key: string]: boolean } = {};
+    ["brand", "model", "price"].forEach((field) => {
+      if (!formData[field as keyof typeof formData]) newErrors[field] = true;
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     const data = {
       brand: formData.brand,
       model: formData.model,
@@ -28,27 +43,48 @@ const BuyPopup: React.FC<{ onClose: () => void; onConfirm: () => void }> = ({ on
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/buy", {
+      const response = await fetch("http://localhost:5000/api/inventory/add", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
       if (!response.ok) throw new Error("Failed to post data");
-      onConfirm();
+
+      onConfirm(); // ✅ Only call this AFTER the API has responded successfully
     } catch (error) {
       console.error("Error submitting buy request:", error);
     }
   };
 
   return (
-    <div style={backdropStyle}>
-      <div style={popupStyle}>
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 1000,
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "#fff",
+          padding: "24px",
+          borderRadius: "12px",
+          width: "400px",
+          maxWidth: "90%",
+          boxShadow: "0 8px 16px rgba(0, 0, 0, 0.25)",
+        }}
+      >
         <h2 style={{ marginBottom: "16px" }}>Buy New Guitar</h2>
 
-        <div style={formStyle}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {["brand", "model", "color", "style", "serialNumber"].map((field) => (
             <input
               key={field}
@@ -57,13 +93,29 @@ const BuyPopup: React.FC<{ onClose: () => void; onConfirm: () => void }> = ({ on
               name={field}
               value={(formData as any)[field]}
               onChange={handleChange}
-              style={inputStyle}
+              style={{
+                width: "100%",
+                padding: "10px",
+                borderRadius: "6px",
+                border: errors[field] ? "2px solid red" : "1px solid #ccc",
+                fontSize: "14px",
+                boxSizing: "border-box",
+              }}
             />
           ))}
 
-          {/* Price field with dollar sign */}
           <div style={{ position: "relative" }}>
-            <span style={dollarStyle}>$</span>
+            <span
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "10px",
+                transform: "translateY(-50%)",
+                color: "#888",
+              }}
+            >
+              $
+            </span>
             <input
               type="text"
               inputMode="decimal"
@@ -71,18 +123,31 @@ const BuyPopup: React.FC<{ onClose: () => void; onConfirm: () => void }> = ({ on
               placeholder="Price"
               value={formData.price}
               onChange={handleChange}
-              style={{ ...inputStyle, paddingLeft: "24px" }}
+              style={{
+                width: "100%",
+                padding: "10px 10px 10px 24px",
+                borderRadius: "6px",
+                border: errors["price"] ? "2px solid red" : "1px solid #ccc",
+                fontSize: "14px",
+                boxSizing: "border-box",
+              }}
             />
           </div>
 
-          {/* Image URL field */}
           <input
             type="text"
             placeholder="Image URL"
             name="imageUrl"
             value={formData.imageUrl}
             onChange={handleChange}
-            style={inputStyle}
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              fontSize: "14px",
+              boxSizing: "border-box",
+            }}
           />
 
           {formData.imageUrl && (
@@ -94,9 +159,36 @@ const BuyPopup: React.FC<{ onClose: () => void; onConfirm: () => void }> = ({ on
           )}
         </div>
 
-        <div style={buttonRow}>
-          <button onClick={onClose} style={buttonStyle}>Cancel</button>
-          <button onClick={handleSubmit} style={{ ...buttonStyle, backgroundColor: "#4CAF50", color: "#fff" }}>
+        <div
+          style={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <button
+            onClick={onClose}
+            style={{
+              padding: "8px 16px",
+              borderRadius: "6px",
+              border: "none",
+              background: "#eee",
+              cursor: "pointer",
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSubmit}
+            style={{
+              padding: "8px 16px",
+              borderRadius: "6px",
+              border: "none",
+              backgroundColor: "#4CAF50",
+              color: "#fff",
+              cursor: "pointer",
+            }}
+          >
             Confirm
           </button>
         </div>
@@ -105,61 +197,4 @@ const BuyPopup: React.FC<{ onClose: () => void; onConfirm: () => void }> = ({ on
   );
 };
 
-const backdropStyle: React.CSSProperties = {
-  position: "fixed",
-  top: 0, left: 0, right: 0, bottom: 0,
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  zIndex: 1000,
-};
-
-const popupStyle: React.CSSProperties = {
-  backgroundColor: "#fff",
-  padding: "24px",
-  borderRadius: "12px",
-  width: "400px",
-  maxWidth: "90%",
-  boxShadow: "0 8px 16px rgba(0, 0, 0, 0.25)",
-};
-
-const formStyle: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "12px",
-};
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "10px",
-  borderRadius: "6px",
-  border: "1px solid #ccc",
-  fontSize: "14px",
-  boxSizing: "border-box",
-};
-
-const dollarStyle: React.CSSProperties = {
-  position: "absolute",
-  top: "50%",
-  left: "10px",
-  transform: "translateY(-50%)",
-  color: "#888",
-};
-
-const buttonRow: React.CSSProperties = {
-  marginTop: "20px",
-  display: "flex",
-  justifyContent: "space-between",
-};
-
-const buttonStyle: React.CSSProperties = {
-  padding: "8px 16px",
-  borderRadius: "6px",
-  border: "none",
-  background: "#eee",
-  cursor: "pointer",
-};
-
 export default BuyPopup;
-

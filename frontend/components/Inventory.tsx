@@ -13,14 +13,15 @@ type InventoryItem = {
   image_url: string;
 };
 
-const Inventory: React.FC = () => {
+const Inventory: React.FC<{ refreshTrigger: number }> = ({ refreshTrigger }) => {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [showSellPopup, setShowSellPopup] = useState(false);
 
-  useEffect(() => {
-    fetch("http://localhost:5000/api/inventory/") //use the company id eventually
+  const fetchInventory = () => {
+    setLoading(true);
+    fetch("http://localhost:5000/api/inventory/")
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP error ${res.status}`);
         return res.json();
@@ -33,7 +34,11 @@ const Inventory: React.FC = () => {
         console.error("Failed to fetch inventory:", err);
         setLoading(false);
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    fetchInventory();
+  }, [refreshTrigger]);
 
   if (loading) return <p>Loading...</p>;
 

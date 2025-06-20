@@ -4,6 +4,7 @@ from tools.database.getInventory import getInventory
 from tools.database.addTrade import addTrade
 from tools.database.buyItem import buyItem
 from tools.database.addItem import addItem
+from tools.database.sellItem import sellItem
 from tools.general.processItems import processItems
 
 import sys
@@ -19,19 +20,18 @@ app = Flask(__name__)
 def get_inventory(company_id):
     return jsonify(getInventory(company_id))
 
-# -- Buy --
-@app.route("/api/buy", methods=["POST"])
-def Buy():
+@app.route("/api/inventory/add", methods=["POST"])
+def add_inventory():
     try:
         data = request.get_json()
         print(data)
 
-        company_id = 0 #data.get("company_id")
+        company_id = 0  # placeholder
         brand = data.get("brand")
         model = data.get("model")
         color = data.get("color")
-        style = data.get("syle")
-        serial_number = data.get("serial")
+        style = data.get("style")  # fixed typo
+        serial_number = data.get("serial_number")  # fixed key
         price = data.get("price")
         image_url = data.get("image_url")
 
@@ -41,6 +41,21 @@ def Buy():
     except Exception as exception:
         print(exception)
         return jsonify({"success": False, "error": str(exception)}), 500
+
+@app.route("/api/inventory/sell/<int:item_id>", methods=["POST"])
+def sell_inventory_item(item_id):
+    try:
+        data = request.get_json(silent=True) or {}
+        sale_price = data.get("sale_price")
+
+        from tools.database.sellItem import sellItem
+        result = sellItem(item_id, sale_price)
+
+        return jsonify({"success": True, "result": result}), 200
+
+    except Exception as e:
+        print("Error in /api/inventory/sell:", e)
+        return jsonify({"success": False, "error": str(e)}), 500
 
 # --- trades ---
 @app.route("/api/trade/", methods=["POST"])

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import BuyPopup from "../components/BuyPopup.tsx";
+import BuyPopup from "../components/BuyPopup";
 
 const Dashboard = () => {
   const [showBuyPopup, setShowBuyPopup] = useState(false);

@@ -13,17 +13,47 @@ type InventoryItem = {
 type SellPopupProps = {
   item: InventoryItem;
   onClose: () => void;
-  onConfirm: (amount: number) => void;
+  onConfirm: () => void;
 };
 
 const SellPopup: React.FC<SellPopupProps> = ({ item, onClose, onConfirm }) => {
   const [amount, setAmount] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   const handleClickOutside = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).id === "popup-overlay") {
       onClose();
     }
   };
+
+  const handleConfirm = () => {
+    const value = parseFloat(amount);
+    if (isNaN(value)) {
+      setError("Sale price is required and must be a number.");
+      return;
+    }
+
+    fetch(`/api/inventory/sell/${item.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ value_out: value }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to sell item");
+        return res.json();
+      })
+      .then(() => {
+        onConfirm();
+      })
+      .catch((err) => {
+        console.error("Sell error:", err);
+        setError("Something went wrong while selling the item.");
+      });
+  };
+
+  const isInputInvalid = error.length > 0;
 
   return (
     <div
@@ -50,14 +80,13 @@ const SellPopup: React.FC<SellPopupProps> = ({ item, onClose, onConfirm }) => {
           padding: "24px",
           width: "600px",
           maxWidth: "90%",
+          boxSizing: "border-box",
           boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
           display: "flex",
           flexDirection: "column",
         }}
       >
-        {/* Top section: image and info side-by-side */}
         <div style={{ display: "flex", marginBottom: "16px" }}>
-          {/* Left: Image */}
           <div style={{ flex: "0 0 180px", marginRight: "24px" }}>
             <img
               src={item.image_url}
@@ -71,38 +100,66 @@ const SellPopup: React.FC<SellPopupProps> = ({ item, onClose, onConfirm }) => {
             />
           </div>
 
-          {/* Right: Info */}
           <div style={{ flex: 1 }}>
             <h2 style={{ marginTop: 0 }}>Sell Item</h2>
             <p><strong>{item.brand} {item.model}</strong></p>
             <p>Color: {item.color}</p>
             <p>Style: {item.style}</p>
-            <p>Original Price: {item.price}</p>
+            <p>Original Price: ${!isNaN(Number(item.price)) ? Number(item.price).toFixed(2) : "0.00"}</p>
           </div>
         </div>
 
         <label htmlFor="amount" style={{ marginBottom: "4px" }}>
           Sale Price:
         </label>
-        <input
-          id="amount"
-          type="text" // disables arrows
-          inputMode="decimal" // brings up numeric keyboard on mobile
-          pattern="[0-9]*[.,]?[0-9]*" // optional: pattern to allow decimal numbers
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          placeholder="Enter sale price"
-          style={{
-            padding: "10px",
-            fontSize: "14px",
-            border: "1px solid #ccc",
-            borderRadius: "6px",
-            marginBottom: "20px",
-            width: "100%",
-          }}
-        />
+        <div style={{ position: "relative", width: "100%" }}>
+          <span
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "10px",
+              transform: "translateY(-50%)",
+              color: isInputInvalid ? "red" : "#666",
+              fontSize: "14px",
+            }}
+          >
+            $
+          </span>
+          <input
+            id="amount"
+            type="text"
+            inputMode="decimal"
+            pattern="[0-9]*[.,]?[0-9]*"
+            value={amount}
+            onChange={(e) => {
+              setAmount(e.target.value);
+              setError("");
+            }}
+            placeholder="Enter sale price"
+            style={{
+              padding: "10px 10px 10px 24px",
+              fontSize: "14px",
+              border: `1px solid ${isInputInvalid ? "red" : "#ccc"}`,
+              borderRadius: "6px",
+              marginBottom: "4px",
+              width: "100%",
+              boxSizing: "border-box",
+            }}
+          />
+        </div>
 
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+        {error && (
+          <span style={{ color: "red", fontSize: "14px", marginBottom: "8px" }}>{error}</span>
+        )}
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "10px",
+            paddingTop: "16px", // 👈 added padding above buttons
+          }}
+        >
           <button
             onClick={onClose}
             style={{
@@ -117,12 +174,7 @@ const SellPopup: React.FC<SellPopupProps> = ({ item, onClose, onConfirm }) => {
             Cancel
           </button>
           <button
-            onClick={() => {
-              const value = parseFloat(amount);
-              if (!isNaN(value)) {
-                onConfirm(value);
-              }
-            }}
+            onClick={handleConfirm}
             style={{
               padding: "8px 16px",
               backgroundColor: "#2e7d32",

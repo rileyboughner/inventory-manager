@@ -1,4 +1,4 @@
-##[pylyzer] failed /home/rileyboughner/Code/cms/backend/api.py 1749228448 2177
+##[pylyzer] failed /home/rileyboughner/Code/cms/backend/api.py 1750448964 2942
 .___v_desugar_1 = pyimport "__init__"
 .__init__ = pyimport "__init__"
 .Flask: Never
@@ -19,7 +19,10 @@
 .___v_desugar_6 = pyimport "addItem"
 .addItem = pyimport "addItem"
 .addItem: (color: Obj, serial_number: Obj, brand: Obj, model: Obj) -> Never
-.___v_desugar_7 = pyimport "processItems"
+.___v_desugar_7 = pyimport "sellItem"
+.sellItem = pyimport "sellItem"
+.sellItem: (item_id: Obj, sale_price: Obj := Obj) -> Never
+.___v_desugar_8 = pyimport "processItems"
 .processItems = pyimport "processItems"
 .processItems: (items: global::Iterable(Never)) -> Str
 .sys = pyimport "sys"
@@ -29,7 +32,8 @@
 
 .app: Never
 .get_inventory: (company_id: Obj) -> Never
-.Buy: () -> Never
+.add_inventory: () -> Never
+.sell_inventory_item: (item_id: Obj) -> Never
 .trade: () -> Never
 
 

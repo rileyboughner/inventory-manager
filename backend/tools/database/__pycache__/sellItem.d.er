@@ -1,0 +1,5 @@
+##[pylyzer] failed /home/rileyboughner/Code/cms/backend/tools/database/sellItem.py 1750448943 422
+.___v_desugar_1 = pyimport "execute"
+.execute = pyimport "execute"
+.execute: (query: Obj, data: Obj := Obj, fetch: Bool := Bool and Bool) -> Never
+.sellItem: (item_id: Obj, sale_price: Obj := Obj) -> Never
